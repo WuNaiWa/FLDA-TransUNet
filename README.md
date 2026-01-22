@@ -14,5 +14,6 @@ Run the train script on synapse dataset.
 ```bash
 CUDA_VISIBLE_DEVICES=0 python train.py --dataset Synapse --vit_name R50-ViT-B_16
 
-Run the test script on synapse dataset. 
+Run the test script on synapse dataset.
+```bash
 python test.py --dataset Synapse --vit_name R50-ViT-B_16
