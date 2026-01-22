@@ -1,8 +1,6 @@
 # FLDA-TransUNet
-1.Prepare pre-trained ViT models
-Get models and training parameters in this link: R50-ViT-B_16,At the same time, the parameter file (.pth) in the paper is also stored.(You can download and compress it, put it into the model file and rename it TU_Synapse224, and then use the test code (python test.py --dataset Synapse --vit_name R50-ViT-B_16) to get the test results.)
 
-## 2. Prepare Data
+## 1. Prepare Data
 
 Please use the **preprocessed Synapse dataset** for research purposes:
 
