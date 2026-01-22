@@ -6,9 +6,8 @@ Please use the **preprocessed Synapse dataset** for research purposes:
 
 - Preprocessed data: [Google Drive](https://drive.google.com/drive/folders/1ACJEoTp-uqfFJ73qS3eUObQh52nGuzCd)
 
-
-3.Environment
-Please prepare an environment with python=3.7(conda create -n envir python=3.7.12), and then use the command "pip install -r requirements.txt" for the dependencies.
+## 3.Environment
+Please prepare an environment with python=3.8(conda create -n envir python=3.8), and then use the command "pip install -r requirements.txt" for the dependencies.
 
 4.Train/Test
 Run the train script on synapse dataset. The batch size can be reduced to 12 or 16 to save memory(please also decrease the base_lr linearly), and both can reach similar performance.
