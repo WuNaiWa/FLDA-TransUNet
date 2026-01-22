@@ -4,7 +4,8 @@
 
 Please use the **preprocessed Synapse dataset** for research purposes:
 
-- Preprocessed data (Google Drive): https://drive.google.com/drive/folders/1ACJEoTp-uqfFJ73qS3eUObQh52nGuzCd
+- Preprocessed data: [Google Drive](https://drive.google.com/drive/folders/1ACJEoTp-uqfFJ73qS3eUObQh52nGuzCd)
+
 
 3.Environment
 Please prepare an environment with python=3.7(conda create -n envir python=3.7.12), and then use the command "pip install -r requirements.txt" for the dependencies.
