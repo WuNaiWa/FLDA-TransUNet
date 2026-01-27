@@ -69,14 +69,12 @@ class ME(nn.Module):
         mid_channels = in_channels * expansion_factor
         self.use_res = (in_channels == out_channels)
 
-        # 通道扩展
         self.expand = nn.Sequential(
             nn.Conv2d(in_channels, mid_channels, kernel_size=1, bias=False),
             nn.BatchNorm2d(mid_channels),
             nn.ReLU(inplace=True)
         )
 
-        # 串联 DW + PW 卷积序列
         self.dw_pw = nn.Sequential(
             # DW 3x3
             nn.Conv2d(mid_channels, mid_channels, kernel_size=3, padding=1, groups=mid_channels, bias=False),
@@ -117,7 +115,6 @@ class UP(nn.Module):
     def __init__(self, in_channels, out_channels, activation='relu'):
         super(UP, self).__init__()
 
-        # 上采样 → 保留空间结构
         self.upsample = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=False)
 
         self.local_refine = nn.Sequential(
@@ -141,10 +138,10 @@ class SCFG(nn.Module):
         self.align = nn.Conv2d(F_g, F_l, kernel_size=1)
         #DW+PW
         self.conv_fusion = nn.Sequential(
-            nn.Conv2d(F_l, F_l, kernel_size=3, padding=1, groups=F_l, bias=False),  # DW卷积
+            nn.Conv2d(F_l, F_l, kernel_size=3, padding=1, groups=F_l, bias=False),  
             nn.BatchNorm2d(F_l),
             nn.ReLU(inplace=True),
-            nn.Conv2d(F_l, F_l, kernel_size=1, bias=False),  # PW卷积
+            nn.Conv2d(F_l, F_l, kernel_size=1, bias=False),  
             nn.BatchNorm2d(F_l),
             nn.ReLU(inplace=True)
         )
@@ -167,13 +164,11 @@ class SCFG(nn.Module):
         x = self.conv_fusion(x)
         fusion = F.relu(g + x)
 
-        # 通道注意力（使用全局语义）
-        ch_att = self.channel_gate(self.global_pool(fusion))  # [B, C, 1, 1]
+        ch_att = self.channel_gate(self.global_pool(fusion)) 
 
-        # 空间注意力（使用局部结构）
-        sp_att = self.spatial_gate(fusion)                    # [B, 1, H, W]
+        sp_att = self.spatial_gate(fusion) 
 
-        psi = ch_att * sp_att  # broadcast → [B, C, H, W]
+        psi = ch_att * sp_att  
         return x * psi
 
 
@@ -205,48 +200,33 @@ class FLDA(nn.Module):
     def forward(self, x, skips):
 
         d4 = x
-        # d4 = self.da4(x)
         d4 = self.me4(d4)
 
-        # UP3
         d3 = self.up3(d4)
 
-        # SCFG3
-        # x3 = skips[0]
         x3 = self.fg3(g =d3, x = skips[0])
 
-        # Additive aggregation 3
         d3 = d3 + x3
 
-        # ME3
         d3 = self.da3(d3)
         d3 = self.me3(d3)
 
-        # UP2
         d2 = self.up2(d3)
 
-        # SCFG2
-        # x2 = skips[1]
         x2 = self.fg2(g=d2, x=skips[1])
 
-        # Additive aggregation 2
         d2 = d2 + x2
 
-        # ME2
 
         d2 = self.da2(d2)
         d2 = self.me2(d2)
 
-        # UP1
         d1 = self.up1(d2)
 
-        # SCFG1
-        # x1 = skips[2]
         x1 = self.fg1(g=d1, x=skips[2])
 
         d1 = d1 + x1
 
-        # ME1
 
         d1 = self.da1(d1)
         d1 = self.me1(d1)
