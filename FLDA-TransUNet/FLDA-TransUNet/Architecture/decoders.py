@@ -161,8 +161,8 @@ class SCFG(nn.Module):
     def forward(self, g, x):
         g_aligned = self.align(g)
         g = self.conv_fusion(g_aligned)
-        x = self.conv_fusion(x)
-        fusion = F.relu(g + x)
+        x_fusion = self.conv_fusion(x)
+        fusion = F.relu(g + x_fusion)
 
         ch_att = self.channel_gate(self.global_pool(fusion)) 
 
