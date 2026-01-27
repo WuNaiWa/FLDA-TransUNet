@@ -183,8 +183,8 @@ class ASP(nn.Module):
         assert in_channels % groups == 0
         self.groups = groups
         self.conv1x1 = nn.Conv2d(in_channels // groups, in_channels // groups, kernel_size=1)
-        self.pool_h = nn.AdaptiveAvgPool2d((None, 1))  # 沿宽方向平均
-        self.pool_w = nn.AdaptiveAvgPool2d((1, None))  # 沿高方向平均
+        self.pool_h = nn.AdaptiveAvgPool2d((None, 1))  
+        self.pool_w = nn.AdaptiveAvgPool2d((1, None))  
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):
@@ -192,10 +192,10 @@ class ASP(nn.Module):
         g = self.groups
         x_group = x.view(b * g, c // g, h, w)
 
-        x_h = self.pool_h(x_group)  # [B*G, C//G, H, 1]
-        x_w = self.pool_w(x_group).permute(0, 1, 3, 2)  # [B*G, C//G, 1, W]
+        x_h = self.pool_h(x_group)  
+        x_w = self.pool_w(x_group).permute(0, 1, 3, 2)  
 
-        fuse = torch.cat([x_h, x_w], dim=2)  # [B*G, C//G, H+1, W]
+        fuse = torch.cat([x_h, x_w], dim=2)  
         attn = self.conv1x1(fuse)
         x_h, x_w = torch.split(attn, [h, w], dim=2)
         x_w = x_w.permute(0, 1, 3, 2)
@@ -215,8 +215,8 @@ class CDP(nn.Module):
 
     def forward(self, x):
         b, c, h, w = x.size()
-        y = self.pool(x).view(b, 1, c)  # [B, 1, C]
-        y = self.conv1d(y)             # [B, 1, C]
+        y = self.pool(x).view(b, 1, c)  
+        y = self.conv1d(y)             
         y = self.sigmoid(y).view(b, c, 1, 1)
         return x * y
 
